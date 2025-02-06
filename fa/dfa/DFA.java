@@ -1,18 +1,28 @@
 package fa.dfa;
 
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import fa.State;
 
 public class DFA implements DFAInterface {
-    // Instance Variables
-    Set<DFAState> Q;
+    // * Instance Variables
+
+    // Store all characters that make up the Alphabet
     Set<Character> sigma;
+    // Store All DFA States
+    Set<DFAState> Q;
 
     DFAState startState;
+    DFAState finalState;
 
-    // Constructor
+    // Stores the transition table => δ
+    Map<DFAState, Map<Character, DFAState>> transitions;
+
+    // * Constructor
     public DFA() {
+        this.sigma = new LinkedHashSet<>();
 
     }
 
@@ -36,8 +46,8 @@ public class DFA implements DFAInterface {
 
     @Override
     public void addSigma(char symbol) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addSigma'");
+        // Adding symbol to sigma set
+        sigma.add(symbol);
     }
 
     @Override
@@ -48,8 +58,7 @@ public class DFA implements DFAInterface {
 
     @Override
     public Set<Character> getSigma() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSigma'");
+        return sigma;
     }
 
     @Override
@@ -82,10 +91,29 @@ public class DFA implements DFAInterface {
         throw new UnsupportedOperationException("Unimplemented method 'swap'");
     }
 
+    /**
+     * Iterates over the elements currently in sigma builds a string
+     * 
+     * @return String representation of the sigma
+     */
+    private String sigmaString() {
+        String sigmaString = "{ ";
+        Set<Character> currentSigma = getSigma();
+
+        for (Character character : currentSigma) {
+            sigmaString += character;
+            sigmaString += " ";
+        }
+        sigmaString += "}";
+        return sigmaString;
+    }
+
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+        StringBuilder retString = new StringBuilder("");
+        String currentSigma = sigmaString();
+        retString.append("Sigma = " + currentSigma);
+        return retString.toString();
     }
 
 }
