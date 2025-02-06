@@ -12,7 +12,7 @@ public class DFA implements DFAInterface {
     // Store all characters that make up the Alphabet
     Set<Character> sigma;
     // Store All DFA States
-    Set<DFAState> Q;
+    Set<DFAState> allStates;
 
     DFAState startState;
     DFAState finalState;
@@ -22,18 +22,24 @@ public class DFA implements DFAInterface {
 
     // * Constructor
     public DFA() {
+        this.allStates = new LinkedHashSet<>();
         this.sigma = new LinkedHashSet<>();
 
     }
 
     @Override
     public boolean addState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addState'");
+        DFAState newState = new DFAState(name);
+        if (allStates.contains(newState)) {
+            return false; // State already exists
+        }
+        // Add the new state to the set
+        return allStates.add(newState);
     }
 
     @Override
     public boolean setFinal(String name) {
+
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setFinal'");
     }
@@ -102,6 +108,23 @@ public class DFA implements DFAInterface {
 
         for (Character character : currentSigma) {
             sigmaString += character;
+            sigmaString += " ";
+        }
+        sigmaString += "}";
+        return sigmaString;
+    }
+
+    /**
+     * Iterates over the elements currently in allStates builds a string
+     * 
+     * @return String representation of the allStates
+     */
+    public String allStatesString() {
+        String sigmaString = "{ ";
+        Set<DFAState> currentallStates = this.allStates;
+
+        for (DFAState DFAState : currentallStates) {
+            sigmaString += DFAState;
             sigmaString += " ";
         }
         sigmaString += "}";
