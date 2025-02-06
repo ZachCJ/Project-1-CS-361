@@ -46,8 +46,13 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean setStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStart'");
+        DFAState newStart = (DFAState) getState(name);
+        if (newStart == null) {
+            return false;
+        }
+        // State was found and Set to be start state
+        startState = newStart;
+        return true;
     }
 
     @Override
@@ -69,8 +74,15 @@ public class DFA implements DFAInterface {
 
     @Override
     public State getState(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getState'");
+        // Iterate through all states and finds the one with a matching name
+        for (DFAState dfaState : allStates) {
+            System.out.println(dfaState.getName());
+            if (dfaState.getName().equals(name)) {
+                return dfaState;
+            }
+        }
+        // Null if no match was found
+        return null;
     }
 
     @Override
