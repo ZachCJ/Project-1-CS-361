@@ -24,7 +24,7 @@ public class DFA implements DFAInterface {
     public DFA() {
         this.allStates = new LinkedHashSet<>();
         this.sigma = new LinkedHashSet<>();
-
+        this.transitions = new Hashtable<>();
     }
 
     @Override
@@ -71,8 +71,18 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean accepts(String s) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'accepts'");
+        char[] symbols = s.toCharArray();
+        DFAState currentState = startState;
+        for(int i = 0; i < s.length(); i++){
+            Hashtable<DFAState, Character> attemptingPath = new Hashtable<>(1);
+            attemptingPath.put(currentState, symbols[i]);
+            if(transitions.containsKey(attemptingPath)){
+                currentState = transitions.get(attemptingPath);
+            } else {
+                return false;
+            }
+        }
+        return finalState.equals(currentState);
     }
 
     @Override

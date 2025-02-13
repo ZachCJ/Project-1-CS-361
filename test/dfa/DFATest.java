@@ -21,6 +21,7 @@ public class DFATest {
 		assertTrue(dfa.addState("b"));
 		assertTrue(dfa.setStart("a"));
 		assertTrue(dfa.setFinal("b"));
+		assertTrue(dfa.isFinal("b"));
 		
 		assertFalse(dfa.addState("a"));
 		assertFalse(dfa.setStart("c"));
@@ -30,10 +31,13 @@ public class DFATest {
 		assertTrue(dfa.addTransition("a", "b", '1'));
 		assertTrue(dfa.addTransition("b", "a", '0'));
 		assertTrue(dfa.addTransition("b", "b", '1'));
-		
+
+		assertFalse(dfa.addTransition("a", "a", '1'));
 		assertFalse(dfa.addTransition("c", "b", '1'));
 		assertFalse(dfa.addTransition("a", "c", '1'));
 		assertFalse(dfa.addTransition("a", "b", '2'));
+
+		assertTrue(dfa.accepts("1"));
 		
 		return dfa;
 	}
