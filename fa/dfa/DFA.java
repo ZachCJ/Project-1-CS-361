@@ -1,7 +1,7 @@
 package fa.dfa;
 
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.Hashtable;
 import java.util.Set;
 
 import fa.State;
@@ -18,8 +18,7 @@ public class DFA implements DFAInterface {
     DFAState finalState;
 
     // Stores the transition table => δ
-    //<FromState, char, ToState>
-    DFAMap<DFAState, DFAPathMap<Character, DFAState>> transitions;
+    Hashtable<Hashtable<DFAState, Character>, DFAState> transitions;
 
     // * Constructor
     public DFA() {
@@ -113,8 +112,16 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
-        DFAPathMap<Character, DFAState> path = new DFAPathMap<Character, DFAState>();
-        return false;
+        DFAState DFAFromState = new DFAState(fromState);
+        DFAState DFAToState = new DFAState(toState);
+        Hashtable<DFAState, Character> path = new Hashtable<>(1);
+        path.put(DFAFromState, onSymb);
+        if(!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb)) || transitions.containsKey(path)){
+            return false; //A state or symbol does not exist, or transition would violate DFA parameters
+        }
+        //Map<Map<fromState, onSymb>, toState>
+        transitions.put(path, DFAToState);
+        return true;
     }
 
     @Override

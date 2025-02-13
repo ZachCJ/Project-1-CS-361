@@ -1,12 +1,13 @@
 package fa.dfa;
 
 import java.util.Map;
+import java.util.Hashtable;
 
 import fa.State;
 
 public class DFAState extends State {
     // to store transitions for this state
-    DFAPathMap<Character, DFAState> transitions;
+    Hashtable<Character, DFAState> transitions;
 
     public DFAState(String name) {
         super(name);
