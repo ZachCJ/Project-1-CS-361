@@ -6,7 +6,7 @@ import fa.State;
 
 public class DFAState extends State {
     // to store transitions for this state
-    Map<Character, DFAState> transitions;
+    DFAPathMap<Character, DFAState> transitions;
 
     public DFAState(String name) {
         super(name);

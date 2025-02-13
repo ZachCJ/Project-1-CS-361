@@ -18,7 +18,8 @@ public class DFA implements DFAInterface {
     DFAState finalState;
 
     // Stores the transition table => δ
-    Map<DFAState, Map<Character, DFAState>> transitions;
+    //<FromState, char, ToState>
+    DFAMap<DFAState, DFAPathMap<Character, DFAState>> transitions;
 
     // * Constructor
     public DFA() {
@@ -112,8 +113,8 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addTransition'");
+        DFAPathMap<Character, DFAState> path = new DFAPathMap<Character, DFAState>();
+        return false;
     }
 
     @Override
