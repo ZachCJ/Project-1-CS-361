@@ -39,9 +39,14 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean setFinal(String name) {
-
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFinal'");
+        DFAState newFinal = new DFAState(name);
+        if(allStates.contains(newFinal)){
+            allStates.remove(newFinal);
+            finalState = newFinal;
+            allStates.add(finalState);
+            return true;
+        }
+        return false; //Final State is not in set
     }
 
     @Override
@@ -57,6 +62,9 @@ public class DFA implements DFAInterface {
 
     @Override
     public void addSigma(char symbol) {
+        if(sigma.contains(symbol)) {
+            return; //Prevents Duplicate Symbols
+        }
         // Adding symbol to sigma set
         sigma.add(symbol);
     }
@@ -87,14 +95,19 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean isFinal(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isFinal'");
+        if(finalState == null) {
+            return false; //Final state doesn't yet exist
+        }
+        return finalState.getName().equals(name);
+
     }
 
     @Override
     public boolean isStart(String name) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isStart'");
+        if(startState == null) {
+            return false; //Start state doesn't yet exist
+        }
+        return startState.getName().equals(name);
     }
 
     @Override
