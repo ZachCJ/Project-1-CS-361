@@ -1,3 +1,5 @@
 tonytest.java
 *.class
 *.jar
+*.xml
+*.iml
