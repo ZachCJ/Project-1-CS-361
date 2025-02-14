@@ -45,5 +45,8 @@ public class DFAState extends State {
         return getName().hashCode();
     }
 
-    // TODO Add a toString()?
+    @Override
+    public String toString(){
+        return getName();
+    }
 }

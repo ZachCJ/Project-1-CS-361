@@ -3,6 +3,7 @@ package fa.dfa;
 import java.util.LinkedHashSet;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import fa.State;
 
@@ -135,8 +136,34 @@ public class DFA implements DFAInterface {
 
     @Override
     public DFA swap(char symb1, char symb2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'swap'");
+        DFA newDFA = new DFA();
+        for(Character newSigma : sigma) {
+            newDFA.addSigma(newSigma);
+        }
+        for(DFAState newState : allStates) {
+            newDFA.addState(newState.getName());
+        }
+        newDFA.setStart(startState.getName());
+        for(DFAState newState: finalStates) {
+            newDFA.setFinal(newState.getName());
+        }
+        //The accept method is what is performed on all elements of the transitions hashtable.
+        BiConsumer<Hashtable<DFAState, Character>, DFAState> execute = new BiConsumer<Hashtable<DFAState, Character>, DFAState>() {
+            @Override
+            public void accept(Hashtable hashtable, DFAState dfaState) {
+                DFAState state = (DFAState) hashtable.keys().nextElement(); //This hashtable should only have one element for keys
+                if (hashtable.containsValue(symb1)) {
+                    newDFA.addTransition(state.getName(),  dfaState.getName(), symb2);
+                } else if (hashtable.containsValue(symb2)) {
+                    newDFA.addTransition(state.getName(),  dfaState.getName(), symb1);
+                } else {
+                    Character symbol = (Character) hashtable.elements().nextElement(); //This hashtable should only have one element for values
+                    newDFA.addTransition(state.getName(), dfaState.getName(), symbol);
+                }
+            }
+        };
+        transitions.forEach(execute);
+        return newDFA;
     }
 
     /**
