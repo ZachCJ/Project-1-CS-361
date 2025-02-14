@@ -4,9 +4,23 @@ import java.util.LinkedHashSet;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
 import fa.State;
 
+/**
+ * The DFA class implements the functionality of a Deterministic Finite
+ * Automaton (DFA).
+ * It supports defining states, transitions, a start state, final states, and an
+ * alphabet.
+ * This class also provides the ability to evaluate strings for acceptance by
+ * the DFA
+ * and construct textual representations of the DFA's structure.
+ * 
+ * The DFA is built and managed using a combination of state objects, a
+ * transition table,
+ * and collections to track final states, start state, and alphabet symbols.
+ * 
+ * @author Zach Johnston, Antonio Hernandez, CS-361
+ */
 public class DFA implements DFAInterface {
     // * Instance Variables
 
@@ -42,10 +56,10 @@ public class DFA implements DFAInterface {
     @Override
     public boolean setFinal(String name) {
         DFAState newFinal = new DFAState(name);
-        if(allStates.contains(newFinal) && !finalStates.contains(newFinal)){
+        if (allStates.contains(newFinal) && !finalStates.contains(newFinal)) {
             return finalStates.add(newFinal);
         }
-        return false; //Final State is not in set
+        return false; // Final State is not in set
     }
 
     @Override
@@ -61,8 +75,8 @@ public class DFA implements DFAInterface {
 
     @Override
     public void addSigma(char symbol) {
-        if(sigma.contains(symbol)) {
-            return; //Prevents Duplicate Symbols
+        if (sigma.contains(symbol)) {
+            return; // Prevents Duplicate Symbols
         }
         // Adding symbol to sigma set
         sigma.add(symbol);
@@ -72,10 +86,10 @@ public class DFA implements DFAInterface {
     public boolean accepts(String s) {
         char[] symbols = s.toCharArray();
         DFAState currentState = startState;
-        for(int i = 0; i < s.length(); i++){
+        for (int i = 0; i < s.length(); i++) {
             Hashtable<DFAState, Character> attemptingPath = new Hashtable<>(1);
             attemptingPath.put(currentState, symbols[i]);
-            if(transitions.containsKey(attemptingPath)){
+            if (transitions.containsKey(attemptingPath)) {
                 currentState = transitions.get(attemptingPath);
             } else {
                 return false;
@@ -104,8 +118,8 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean isFinal(String name) {
-        if(finalStates.isEmpty()) {
-            return false; //Final state doesn't yet exist
+        if (finalStates.isEmpty()) {
+            return false; // Final state doesn't yet exist
         }
         DFAState targetState = new DFAState(name);
         return finalStates.contains(targetState);
@@ -114,8 +128,8 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean isStart(String name) {
-        if(startState == null) {
-            return false; //Start state doesn't yet exist
+        if (startState == null) {
+            return false; // Start state doesn't yet exist
         }
         return startState.getName().equals(name);
     }
@@ -124,23 +138,23 @@ public class DFA implements DFAInterface {
     public boolean addTransition(String fromState, String toState, char onSymb) {
         DFAState DFAFromState = new DFAState(fromState);
         DFAState DFAToState = new DFAState(toState);
-        for(DFAState state : allStates) {
-            if(state.getName().equals(fromState)){
+        for (DFAState state : allStates) {
+            if (state.getName().equals(fromState)) {
                 DFAFromState = state;
                 break;
             }
         }
-        if(!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb))) {
-            return false; //A state or symbol does not exist, or transition would violate DFA parameters
+        if (!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb))) {
+            return false; // A state or symbol does not exist, or transition would violate DFA parameters
         }
-        //Updating state
+        // Updating state
         allStates.remove(DFAFromState);
-        DFAFromState.addTransition(onSymb,DFAToState);
+        DFAFromState.addTransition(onSymb, DFAToState);
         allStates.add(DFAFromState);
-        //Updating transition map
+        // Updating transition map
         Hashtable<DFAState, Character> path = new Hashtable<>(1);
         path.put(DFAFromState, onSymb);
-        //Map<Map<fromState, onSymb>, toState>
+        // Map<Map<fromState, onSymb>, toState>
         transitions.put(path, DFAToState);
         return true;
     }
@@ -148,27 +162,30 @@ public class DFA implements DFAInterface {
     @Override
     public DFA swap(char symb1, char symb2) {
         DFA newDFA = new DFA();
-        for(Character newSigma : sigma) {
+        for (Character newSigma : sigma) {
             newDFA.addSigma(newSigma);
         }
-        for(DFAState newState : allStates) {
+        for (DFAState newState : allStates) {
             newDFA.addState(newState.getName());
         }
         newDFA.setStart(startState.getName());
-        for(DFAState newState: finalStates) {
+        for (DFAState newState : finalStates) {
             newDFA.setFinal(newState.getName());
         }
-        //The accept method is what is performed on all elements of the transitions hashtable.
+        // The accept method is what is performed on all elements of the transitions
+        // hashtable.
         BiConsumer<Hashtable<DFAState, Character>, DFAState> execute = new BiConsumer<Hashtable<DFAState, Character>, DFAState>() {
             @Override
             public void accept(Hashtable hashtable, DFAState dfaState) {
-                DFAState state = (DFAState) hashtable.keys().nextElement(); //This hashtable should only have one element for keys
+                DFAState state = (DFAState) hashtable.keys().nextElement(); // This hashtable should only have one
+                                                                            // element for keys
                 if (hashtable.containsValue(symb1)) {
-                    newDFA.addTransition(state.getName(),  dfaState.getName(), symb2);
+                    newDFA.addTransition(state.getName(), dfaState.getName(), symb2);
                 } else if (hashtable.containsValue(symb2)) {
-                    newDFA.addTransition(state.getName(),  dfaState.getName(), symb1);
+                    newDFA.addTransition(state.getName(), dfaState.getName(), symb1);
                 } else {
-                    Character symbol = (Character) hashtable.elements().nextElement(); //This hashtable should only have one element for values
+                    Character symbol = (Character) hashtable.elements().nextElement(); // This hashtable should only
+                                                                                       // have one element for values
                     newDFA.addTransition(state.getName(), dfaState.getName(), symbol);
                 }
             }
@@ -203,7 +220,7 @@ public class DFA implements DFAInterface {
         for (DFAState state : allStates) {
             sigmaString = sigmaString.concat(state.toString() + " ");
         }
-        sigmaString = sigmaString.substring(0, sigmaString.length() - 1).concat( "}\n");
+        sigmaString = sigmaString.substring(0, sigmaString.length() - 1).concat("}\n");
         return sigmaString;
     }
 
@@ -213,14 +230,15 @@ public class DFA implements DFAInterface {
      * Q = { a b }
      * Sigma = { 0 1 }
      * delta =
-     *		0	1
-     *	a	a	b
-     *	b	a	b
+     * 0 1
+     * a a b
+     * b a b
      * q0 = a
      * F = { b }
      *
      * The order of the states and the alphabet is the order
      * in which they were instantiated in the DFA.
+     * 
      * @return String representation of the DFA
      */
     @Override
@@ -236,7 +254,7 @@ public class DFA implements DFAInterface {
 
     private String finalStatesString() {
         String str = "{";
-        for(DFAState state : finalStates) {
+        for (DFAState state : finalStates) {
             str = str.concat(state.toString() + " ");
         }
         str = str.substring(0, str.length() - 1).concat("}");
@@ -246,11 +264,11 @@ public class DFA implements DFAInterface {
     private String deltaString() {
         String str = "\n";
         str = str.concat("   " + sigmaString() + "\n");
-        for(DFAState state : allStates){
+        for (DFAState state : allStates) {
             str = str.concat(" " + state.toString() + " ");
-            for(Character symbol: sigma){
+            for (Character symbol : sigma) {
                 String name = state.getNextState(symbol).getName();
-                if(name != null){
+                if (name != null) {
                     str = str.concat(state.getNextState(symbol).getName() + " ");
                 } else {
                     str = str.concat(" _ ");

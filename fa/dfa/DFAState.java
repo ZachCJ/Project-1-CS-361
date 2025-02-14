@@ -5,6 +5,14 @@ import java.util.Hashtable;
 
 import fa.State;
 
+/**
+ * Represents a state in a Deterministic Finite Automaton (DFA).
+ * This class extends {@link State} and includes methods for managing
+ * state transitions and equality checks.
+ * 
+ * 
+ * @author Zach Johnston, Antonio Hernandez, CS-361
+ */
 public class DFAState extends State {
     // to store transitions for this state
     Hashtable<Character, DFAState> transitions;
@@ -47,7 +55,7 @@ public class DFAState extends State {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return getName();
     }
 }
