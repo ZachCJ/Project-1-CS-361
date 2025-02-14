@@ -15,7 +15,7 @@ public class DFA implements DFAInterface {
     Set<DFAState> allStates;
 
     DFAState startState;
-    DFAState finalState;
+    Set<DFAState> finalStates;
 
     // Stores the transition table => δ
     Hashtable<Hashtable<DFAState, Character>, DFAState> transitions;
@@ -25,6 +25,7 @@ public class DFA implements DFAInterface {
         this.allStates = new LinkedHashSet<>();
         this.sigma = new LinkedHashSet<>();
         this.transitions = new Hashtable<>();
+        this.finalStates = new LinkedHashSet<>();
     }
 
     @Override
@@ -40,11 +41,8 @@ public class DFA implements DFAInterface {
     @Override
     public boolean setFinal(String name) {
         DFAState newFinal = new DFAState(name);
-        if(allStates.contains(newFinal)){
-            allStates.remove(newFinal);
-            finalState = newFinal;
-            allStates.add(finalState);
-            return true;
+        if(allStates.contains(newFinal) && !finalStates.contains(newFinal)){
+            return finalStates.add(newFinal);
         }
         return false; //Final State is not in set
     }
@@ -82,7 +80,7 @@ public class DFA implements DFAInterface {
                 return false;
             }
         }
-        return finalState.equals(currentState);
+        return finalStates.contains(currentState);
     }
 
     @Override
@@ -105,10 +103,11 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean isFinal(String name) {
-        if(finalState == null) {
+        if(finalStates.isEmpty()) {
             return false; //Final state doesn't yet exist
         }
-        return finalState.getName().equals(name);
+        DFAState targetState = new DFAState(name);
+        return finalStates.contains(targetState);
 
     }
 
@@ -126,7 +125,7 @@ public class DFA implements DFAInterface {
         DFAState DFAToState = new DFAState(toState);
         Hashtable<DFAState, Character> path = new Hashtable<>(1);
         path.put(DFAFromState, onSymb);
-        if(!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb)) || transitions.containsKey(path)){
+        if(!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb))) {
             return false; //A state or symbol does not exist, or transition would violate DFA parameters
         }
         //Map<Map<fromState, onSymb>, toState>
