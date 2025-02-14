@@ -11,6 +11,7 @@ public class DFAState extends State {
 
     public DFAState(String name) {
         super(name);
+        transitions = new Hashtable<>();
     }
 
     // Add a transition for this state

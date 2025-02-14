@@ -76,14 +76,14 @@ public class DFATest {
 		DFA dfa = dfa1();
 
 		String dfaStr = dfa.toString();
-		String expStr = " Q = { a b }\n"
-				+ "Sigma = { 0 1 }\n"
+		String expStr = "Q = {a b}\n"
+				+ "Sigma = {0 1}\n"
 				+ "delta =\n"
 				+ "		0	1\n"
 				+ "	a	a	b\n"
 				+ "	b	a	b\n"
 				+ "q0 = a\n"
-				+ "F = { b }";
+				+ "F = {b}";
 
 		assertTrue(dfaStr.replaceAll("\\s", "").equals(expStr.replaceAll("\\s", "")));
 
@@ -201,21 +201,19 @@ public class DFATest {
 		DFA dfa = dfa2();
 
 		String dfaStr = dfa.toString();
-		String expStr = "Q={3 0 1 2}\n"
+		String expStr = "Q={0 1 2 3}\n"
 				+ "Sigma = {0 1}\n"
 				+ "delta =\n"
 				+ "	0	1\n"
-				+ "3	3	3\n"
 				+ "0	1	0\n"
 				+ "1	3	2\n"
 				+ "2	1	1\n"
+				+ "3	3	3\n"
 				+ "q0 = 0\n"
-				+ "F={3}\n";
+				+ "F = {3}\n";
 		assertTrue(dfaStr.replaceAll("\\s", "").equals(expStr.replaceAll("\\s", "")));
 		System.out.println("dfa2 toString pass");
 	}
-
-
 
 	@Test
 	public void test2_5() {
@@ -352,17 +350,17 @@ public class DFATest {
 		DFA dfa = dfa3();
 
 		String dfaStr = dfa.toString();
-		String expStr = "Q={GDABCEF}\n"
+		String expStr = "Q = {A B C D E F G}\n"
 				+ "Sigma = {2 1}\n"
 				+ "delta =\n"
 				+ "	2	1\n"
-				+ "G	G	F\n"
-				+ "D	E	D\n"
 				+ "A	C	B\n"
 				+ "B	E	D\n"
 				+ "C	G	F\n"
+				+ "D	E	D\n"
 				+ "E	E	D\n"
 				+ "F	G	F\n"
+				+ "G	G	F\n"
 				+ "q0 = A\n"
 				+ "F = {G D}\n";
 

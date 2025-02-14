@@ -18,7 +18,7 @@ public class DFA implements DFAInterface {
     DFAState startState;
     Set<DFAState> finalStates;
 
-    // Stores the transition table => δ
+    // Stores the transitions in a way that can be navigated in memory
     Hashtable<Hashtable<DFAState, Character>, DFAState> transitions;
 
     // * Constructor
@@ -124,11 +124,22 @@ public class DFA implements DFAInterface {
     public boolean addTransition(String fromState, String toState, char onSymb) {
         DFAState DFAFromState = new DFAState(fromState);
         DFAState DFAToState = new DFAState(toState);
-        Hashtable<DFAState, Character> path = new Hashtable<>(1);
-        path.put(DFAFromState, onSymb);
+        for(DFAState state : allStates) {
+            if(state.getName().equals(fromState)){
+                DFAFromState = state;
+                break;
+            }
+        }
         if(!(allStates.contains(DFAFromState) && allStates.contains(DFAToState) && sigma.contains(onSymb))) {
             return false; //A state or symbol does not exist, or transition would violate DFA parameters
         }
+        //Updating state
+        allStates.remove(DFAFromState);
+        DFAFromState.addTransition(onSymb,DFAToState);
+        allStates.add(DFAFromState);
+        //Updating transition map
+        Hashtable<DFAState, Character> path = new Hashtable<>(1);
+        path.put(DFAFromState, onSymb);
         //Map<Map<fromState, onSymb>, toState>
         transitions.put(path, DFAToState);
         return true;
@@ -172,15 +183,14 @@ public class DFA implements DFAInterface {
      * @return String representation of the sigma
      */
     private String sigmaString() {
-        String sigmaString = "{ ";
+        String sigmaString = "";
         Set<Character> currentSigma = getSigma();
 
         for (Character character : currentSigma) {
             sigmaString += character;
             sigmaString += " ";
         }
-        sigmaString += "}";
-        return sigmaString;
+        return sigmaString.substring(0, sigmaString.length() - 1);
     }
 
     /**
@@ -189,23 +199,65 @@ public class DFA implements DFAInterface {
      * @return String representation of the allStates
      */
     public String allStatesString() {
-        String sigmaString = "{ ";
-        Set<DFAState> currentallStates = this.allStates;
-
-        for (DFAState DFAState : currentallStates) {
-            sigmaString += DFAState;
-            sigmaString += " ";
+        String sigmaString = "{";
+        for (DFAState state : allStates) {
+            sigmaString = sigmaString.concat(state.toString() + " ");
         }
-        sigmaString += "}";
+        sigmaString = sigmaString.substring(0, sigmaString.length() - 1).concat( "}\n");
         return sigmaString;
     }
 
+    /**
+     * Construct the textual representation of the DFA, for example
+     * A simple two state DFA
+     * Q = { a b }
+     * Sigma = { 0 1 }
+     * delta =
+     *		0	1
+     *	a	a	b
+     *	b	a	b
+     * q0 = a
+     * F = { b }
+     *
+     * The order of the states and the alphabet is the order
+     * in which they were instantiated in the DFA.
+     * @return String representation of the DFA
+     */
     @Override
     public String toString() {
-        StringBuilder retString = new StringBuilder("");
+        StringBuilder retString = new StringBuilder("Q = ".concat(allStatesString()));
         String currentSigma = sigmaString();
-        retString.append("Sigma = " + currentSigma);
+        retString.append("Sigma = ".concat("{" + currentSigma + "}\n"));
+        retString.append("delta = ".concat(deltaString()));
+        retString.append("q0 = ".concat(startState.getName() + "\n"));
+        retString.append("F = ".concat(finalStatesString() + "\n"));
         return retString.toString();
     }
 
+    private String finalStatesString() {
+        String str = "{";
+        for(DFAState state : finalStates) {
+            str = str.concat(state.toString() + " ");
+        }
+        str = str.substring(0, str.length() - 1).concat("}");
+        return str;
+    }
+
+    private String deltaString() {
+        String str = "\n";
+        str = str.concat("   " + sigmaString() + "\n");
+        for(DFAState state : allStates){
+            str = str.concat(" " + state.toString() + " ");
+            for(Character symbol: sigma){
+                String name = state.getNextState(symbol).getName();
+                if(name != null){
+                    str = str.concat(state.getNextState(symbol).getName() + " ");
+                } else {
+                    str = str.concat(" _ ");
+                }
+            }
+            str = str.concat("\n");
+        }
+        return str;
+    }
 }
