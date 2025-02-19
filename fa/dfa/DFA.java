@@ -107,7 +107,7 @@ public class DFA implements DFAInterface {
     public State getState(String name) {
         // Iterate through all states and finds the one with a matching name
         for (DFAState dfaState : allStates) {
-            System.out.println(dfaState.getName());
+            //System.out.println(dfaState.getName()); was for debugging
             if (dfaState.getName().equals(name)) {
                 return dfaState;
             }
